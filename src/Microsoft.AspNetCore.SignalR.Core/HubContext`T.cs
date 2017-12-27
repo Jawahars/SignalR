@@ -44,6 +44,11 @@ namespace Microsoft.AspNetCore.SignalR
             return TypedClientBuilder<T>.Build(new GroupProxy<THub>(_lifetimeManager, groupName));
         }
 
+        public T MultipleGroups(IReadOnlyList<string> groupNames)
+        {
+            return TypedClientBuilder<T>.Build(new MultipleGroupProxy<THub>(_lifetimeManager, groupNames));
+        }
+
         public T GroupExcept(string groupName, IReadOnlyList<string> excludeIds)
         {
             return TypedClientBuilder<T>.Build(new GroupExceptProxy<THub>(_lifetimeManager, groupName, excludeIds));

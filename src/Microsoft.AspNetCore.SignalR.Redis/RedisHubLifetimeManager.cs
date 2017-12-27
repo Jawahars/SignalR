@@ -601,6 +601,33 @@ namespace Microsoft.AspNetCore.SignalR.Redis
             return Task.WhenAll(publishTasks);
         }
 
+        public override Task InvokeGroupsAsync(IReadOnlyList<string> groupNames, string methodName, object[] args)
+        {
+            if (groupNames == null)
+            {
+                throw new ArgumentNullException(nameof(groupNames));
+            }
+            var publishTasks = new List<Task>(groupNames.Count);
+            var message = new RedisInvocationMessage(target: methodName, arguments: args);
+
+            foreach (string groupName in groupNames)
+            {
+                var group = _groups[groupName];
+                // If the connection is local we can skip sending the message through the bus since we require sticky connections.
+                // This also saves serializing and deserializing the message!
+                if (groupName != null)
+                {
+                    publishTasks.Add(Task.WhenAll((group.Connections.Select(c => c.WriteAsync(message.CreateInvocation())))));
+                }
+                else
+                {
+                    publishTasks.Add(PublishAsync(_channelNamePrefix + "." + groupName, message));
+                }
+            }
+
+            return Task.WhenAll(publishTasks);
+        }
+
         private class LoggerTextWriter : TextWriter
         {
             private readonly ILogger _logger;
