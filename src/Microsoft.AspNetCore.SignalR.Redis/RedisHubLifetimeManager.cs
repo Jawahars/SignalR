@@ -612,17 +612,7 @@ namespace Microsoft.AspNetCore.SignalR.Redis
 
             foreach (string groupName in groupNames)
             {
-                var group = _groups[groupName];
-                // If the connection is local we can skip sending the message through the bus since we require sticky connections.
-                // This also saves serializing and deserializing the message!
-                if (groupName != null)
-                {
-                    publishTasks.Add(Task.WhenAll((group.Connections.Select(c => c.WriteAsync(message.CreateInvocation())))));
-                }
-                else
-                {
-                    publishTasks.Add(PublishAsync(_channelNamePrefix + "." + groupName, message));
-                }
+                publishTasks.Add(PublishAsync(_channelNamePrefix + "." + groupName, message));
             }
 
             return Task.WhenAll(publishTasks);
