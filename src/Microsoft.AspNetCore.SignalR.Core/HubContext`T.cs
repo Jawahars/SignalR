@@ -53,5 +53,10 @@ namespace Microsoft.AspNetCore.SignalR
         {
             return TypedClientBuilder<T>.Build(new UserProxy<THub>(_lifetimeManager, userId));
         }
+
+        public T MultipleUsers(IReadOnlyList<string> userIds)
+        {
+            return TypedClientBuilder<T>.Build(new MultipleUserProxy<THub>(_lifetimeManager, userIds));
+        }
     }
 }
