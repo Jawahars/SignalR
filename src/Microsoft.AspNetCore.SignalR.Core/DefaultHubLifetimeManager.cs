@@ -208,6 +208,5 @@ namespace Microsoft.AspNetCore.SignalR
                 return connectionIds.Contains(connection.ConnectionId);
             });
         }
-
     }
 }
