@@ -53,7 +53,7 @@ namespace Microsoft.AspNetCore.SignalR
 
         public Task InvokeAsync(string method, params object[] args)
         {
-            return _lifetimeManager.InvokeConnectionsAsync(_groupNames, method, args);
+            return _lifetimeManager.InvokeGroupsAsync(_groupNames, method, args);
         }
     }
 
